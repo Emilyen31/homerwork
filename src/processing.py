@@ -15,3 +15,11 @@ def filter_by_state(list_dicts: list[dict], state: str = "EXECUTED") -> list[dic
             filter_dicts.append(filter_dict)
 
     return filter_dicts
+
+
+def sort_by_date(list_dicts: list[dict]) -> list:
+    """Функция, которая  возвращает новый список словарей, отсортированный по дате"""
+
+    sort_dicts = sorted(list_dicts, key=lambda x: x["date"], reverse=True)
+
+    return sort_dicts

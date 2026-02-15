@@ -1,5 +1,10 @@
+from typing import Any
+from datetime import datetime
+
+
 def filter_by_state(list_dicts: list[dict], state: str = "EXECUTED") -> list[dict]:
-    """Функция которая возвращает список словарей с заданым статусом"""
+    """Функция которая принимает список словарей и опционально значение для ключа state (по умолчанию 'EXECUTED'),
+    и возвращает новый список словарей, у которых ключ state соответствует указанному значению."""
 
     # Создаём пустой список
 
@@ -17,9 +22,21 @@ def filter_by_state(list_dicts: list[dict], state: str = "EXECUTED") -> list[dic
     return filter_dicts
 
 
-def sort_by_date(list_dicts: list[dict]) -> list:
-    """Функция, которая  возвращает новый список словарей, отсортированный по дате"""
+def sort_by_date(list_dicts: list[dict[str, Any]], sort_descending: bool = True) -> list[dict[str, Any]]:
+    """Принимает список словарей и необязательный параметр, задающий порядок сортировки (по умолчанию — убывание),
+    и возвращает новый список, отсортированный по дате."""
 
-    sort_dicts = sorted(list_dicts, key=lambda x: x["date"], reverse=True)
+    # Преобразуем строки дат в объекты datetime для сортировки
 
-    return sort_dicts
+    for date in list_dicts:
+        date["date"] = datetime.strptime(date["date"], "%Y-%m-%dT%H:%M:%S.%f")
+
+    # Сортируем список словарей по ключу 'date'
+
+        sorted_data: list[dict[str, Any]] = sorted(list_dicts, key=lambda x: x["date"], reverse=sort_descending)
+
+    # Преобразуем обратно в строковый формат
+    for data in list_dicts:
+        data["date"] = data["date"].strftime("%Y-%m-%dT%H:%M:%S.%f")
+
+    return sorted_data

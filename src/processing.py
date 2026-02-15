@@ -26,17 +26,31 @@ def sort_by_date(list_dicts: list[dict[str, Any]], sort_descending: bool = True)
     """Принимает список словарей и необязательный параметр, задающий порядок сортировки (по умолчанию — убывание),
     и возвращает новый список, отсортированный по дате."""
 
-    # Преобразуем строки дат в объекты datetime для сортировки
+    # Создаём новый список для хранения данных
 
+    temp_list = []
     for date in list_dicts:
-        date["date"] = datetime.strptime(date["date"], "%Y-%m-%dT%H:%M:%S.%f")
 
-    # Сортируем список словарей по ключу 'date'
+        # Копируем словарь, чтобы не изменять исходный
 
-        sorted_data: list[dict[str, Any]] = sorted(list_dicts, key=lambda x: x["date"], reverse=sort_descending)
+        new_date = date.copy()
 
-    # Преобразуем обратно в строковый формат
-    for data in list_dicts:
-        data["date"] = data["date"].strftime("%Y-%m-%dT%H:%M:%S.%f")
+        # Преобразуем строки дат в объекты datetime для сортировки
 
-    return sorted_data
+        new_date["date"] = datetime.strptime(new_date["date"], "%Y-%m-%dT%H:%M:%S.%f")
+        temp_list.append(new_date)
+
+    # Сортируем временный список по ключу 'date'
+
+    sorted_data = sorted(temp_list, key=lambda x: x["date"], reverse=sort_descending)
+
+    # Преобразуем обратно в строковый формат и формируем итоговый список
+
+    result_list = []
+    for data in sorted_data:
+        # Копируем словарь, чтобы не изменять временный
+
+        new_data = data.copy()
+        new_data["date"] = new_data["date"].strftime("%Y-%m-%dT%H:%M:%S.%f")
+        result_list.append(new_data)
+    return result_list
